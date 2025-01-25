@@ -14,6 +14,7 @@ class DoctorController extends Controller
     {
         $doctor = Doctor::all(); // Obtener todos los doctores
         return view('doctor.index', compact('doctor'));
+        
     }
 
     /**
@@ -35,13 +36,12 @@ class DoctorController extends Controller
             'horario_disponible' => 'required|array', // Validar como array
         ]);
 
+        //ESTE ES EL CAMBIO.......................................................................
+        $request['horario_disponible'] = json_encode($request->horario_disponible);
 
-        Doctor::create([
-            'nombre' => $request->nombre,
-            'especialidad' => $request->especialidad,
-            'horario_disponible' => json_encode($request->horario_disponible),
-        ]);
+        Doctor::create($request->all());
 
+      
         return redirect()->route('doctor.index')->with('success', 'Doctor creado exitosamente.');
     }
 
@@ -72,12 +72,11 @@ class DoctorController extends Controller
             'horario_disponible' => 'required|array',
         ]);
 
+        //ESTE ES EL CAMBIO................................................................
+        $request['horario_disponible'] = json_encode($request->horario_disponible);
+
         // Actualizar con los datos proporcionados
-        $doctor->update([
-            'nombre' => $request->nombre,
-            'especialidad' => $request->especialidad,
-            'horario_disponible' => json_encode($request->horario_disponible),
-        ]);
+        $doctor->update($request->all());
 
         return redirect()->route('doctor.index')->with('success', 'Doctor actualizado exitosamente.');
     }

@@ -21,7 +21,7 @@ class CreatePatientsTable extends Migration
             $table->string('genero'); // género del paciente
             $table->string('direccion'); // dirección del paciente
             $table->string('telefono'); // teléfono del paciente
-            $table->text('historial_Medico')->nullable(); // historial médico, puede ser nulo
+            $table->json('historial_medico')->nullable();
             $table->timestamps(); // timestamps para created_at y updated_at
         });
     }

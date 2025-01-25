@@ -2,17 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasRoles;
+use App\Models\UsuarioDelSistema;
 
-class AdministracionDelSistema extends Model
+class AdministracionDelSistema extends UsuarioDelSistema
 {
-    use HasFactory;
+    // Usar el trait HasRoles para gestión de roles y permisos
+    use HasRoles;
 
-    protected $fillable =[
-        'Id',
-        'NombreAdministrador',
-        'Permisos',
-    ];
-    
+    protected $table = 'usuarios'; // Tabla compartida con UsuarioDelSistema
+
+    // Filtra solo a los administradores
+    public static function scopeAdministradores($query)
+    {
+        return $query->where('tipoUsuario', 'administrador');
+    }
+
+    // Relación con roles usando Spatie (si lo usas)
+    public function permisos()
+    {
+        return $this->getRoleNames(); // Suponiendo que usas Spatie Laravel Permission
+    }
 }

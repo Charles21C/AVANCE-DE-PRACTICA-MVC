@@ -22,4 +22,12 @@ class Doctor extends Model
     protected $casts = [
         'horario_disponible' => 'array',
     ];
+
+  
+
+public function citas()
+{
+    return $this->hasMany(CitaMedica::class);
+}
+
 }

@@ -4,108 +4,104 @@ namespace App\Http\Controllers;
 
 use App\Models\CitaMedica;
 use App\Models\Doctor;
-use App\Models\Patients;
+use App\Models\Patients;  
 use Illuminate\Http\Request;
 
 class CitaMedicaController extends Controller
 {
-    /**
-     * Mostrar todas las citas médicas.
-     */
     public function index()
     {
-        $citas = CitaMedica::all(); // 
-        return view('cita.index', compact('citas')); // 
+        $citas = CitaMedica::with('doctor', 'patient')->get(); 
+        return view('cita.index', compact('citas'));
     }
 
-    /**
-     * Mostrar el formulario para crear una nueva cita médica.
-     */
-    public function create()
-    {
-        $patients = Patients::all();  
-        $doctors = Doctor::all();  
-        return view('cita.create', compact('patients', 'doctors')); 
-    }
+    
+       //desde aqui es el cambio
+        public function create()
+        {
+             //$doctors = Doctor::all();
+        //$patients = Patients::all(); 
+        //return view('cita.create', compact('doctors', 'patients'));
 
-    /**
-     * Almacenar una nueva cita médica.
-     */
+            $especialidades = Doctor::select('especialidad')->distinct()->pluck('especialidad');
+            return view('cita.create', compact('especialidades'));
+        }
+    
+        public function disponibilidad(Request $request)
+        {
+            $especialidad = $request->input('especialidad');
+            $doctors = Doctor::where('especialidad', $especialidad)->get(['id', 'nombre', 'horario_disponible']);
+    
+            $disponibilidad = [];
+            foreach ($doctors as $doctor) {
+                $horarios = json_decode($doctor->horario_disponible, true);
+                foreach ($horarios as $horario) {
+                    $disponibilidad[] = [
+                        'doctor_id' => $doctor->id,
+                        'doctor' => $doctor->nombre,
+                        'horario' => $horario,
+                    ];
+                }
+            }
+            return response()->json($disponibilidad);
+        }
+    //hasta aqui es el cambio
+
     public function store(Request $request)
     {
         $request->validate([
-            'paciente_id' => 'required|exists:patients,id', 
-            'medico_id' => 'required|exists:doctors,id', 
-            'fecha' => 'required|date', 
-            'hora' => 'required|date_format:H:i', 
-            'estado' => 'required|string',
-            'especialidad' => 'required|string', 
+            'fecha' => 'required|date',
+            'hora' => 'required|date_format:H:i',
+            'estado' => 'required|string|in:pendiente,realizada,cancelada',
+            'especialidad' => 'required|string',
+            'doctor_id' => 'required|exists:doctors,id',
+            'patient_id' => 'required|exists:patients,id',
         ]);
 
-
-        CitaMedica::create([
-            'paciente_id' => $request->paciente_id,
-            'medico_id' => $request->medico_id,
-            'fecha' => $request->fecha,
-            'hora' => $request->hora,
-            'estado' => $request->estado,
-            'especialidad' => $request->especialidad,
-        ]);
-
-        return redirect()->route('cita.index')->with('success', 'Cita médica agendada exitosamente.');
+        CitaMedica::create($request->all());
+        return redirect()->route('cita.index')->with('success', 'Cita médica creada exitosamente.');
     }
 
-    /**
-     * Mostrar una cita médica específica.
-     */
-    public function show(CitaMedica $citaMedica)
+    public function show($id)
     {
-        return view('cita.show', compact('citaMedica')); 
-    }
+       $cita = CitaMedica::with('doctor', 'patient')->findOrFail($id);
+       return view('cita.show', compact('cita'));
+    }  
 
-    /**
-     * Mostrar el formulario para editar una cita médica.
-     */
-    public function edit(CitaMedica $citaMedica)
+    public function edit(CitaMedica $cita)
     {
-        $patients = Patients::all();  
-        $doctors = Doctor::all();  
-        return view('cita.edit', compact('citaMedica', 'patients', 'doctors')); 
+        $doctors = Doctor::all();
+        $patients = Patients::all(); 
+        return view('cita.edit', compact('cita', 'doctors', 'patients'));
     }
 
-    /**
-     * Actualizar la cita médica.
-     */
-    public function update(Request $request, CitaMedica $citaMedica)
+    public function update(Request $request, CitaMedica $cita)
     {
         $request->validate([
-            'paciente_id' => 'required|exists:patients,id', 
-            'medico_id' => 'required|exists:doctors,id', 
-            'fecha' => 'required|date', 
-            'hora' => 'required|date_format:H:i', 
-            'estado' => 'required|string',
-            'especialidad' => 'required|string', 
+            'fecha' => 'required|date',
+            'hora' => 'required|date_format:H:i',
+            'estado' => 'required|string|in:pendiente,realizada,cancelada',
+            'especialidad' => 'required|string',
+            'doctor_id' => 'required|exists:doctors,id',
+            'patient_id' => 'required|exists:patients,id',
         ]);
 
-        // Actualización de los datos de la cita médica
-        $citaMedica->update([
-            'paciente_id' => $request->paciente_id,
-            'medico_id' => $request->medico_id,
-            'fecha' => $request->fecha,
-            'hora' => $request->hora,
-            'estado' => $request->estado,
-            'especialidad' => $request->especialidad,
-        ]);
-
+        $cita->update($request->all());
         return redirect()->route('cita.index')->with('success', 'Cita médica actualizada exitosamente.');
+        
     }
 
-    /**
-     * Eliminar una cita médica.
-     */
-    public function destroy(CitaMedica $citaMedica)
+    public function destroy(CitaMedica $cita)
     {
-        $citaMedica->delete();
+        $cita->delete();
         return redirect()->route('cita.index')->with('success', 'Cita médica eliminada exitosamente.');
     }
+
+
+
+
+
+
+
+
 }

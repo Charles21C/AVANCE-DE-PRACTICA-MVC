@@ -17,7 +17,7 @@ class CreateDoctorsTable extends Migration
             $table->id(); // ID del doctor
             $table->string('nombre'); // Nombre del doctor
             $table->string('especialidad'); // Especialidad médica
-            $table->json('horarioDisponible'); // Horarios disponibles como lista de strings
+            $table->json('horario_disponible'); 
             $table->timestamps(); 
         });
     }

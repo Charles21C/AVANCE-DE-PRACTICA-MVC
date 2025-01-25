@@ -10,7 +10,7 @@ class Patients extends Model
     use HasFactory;
 
    
-    protected $primaryKey = 'id'; 
+    protected $table = 'patients'; 
 
     protected $fillable = [
         'nombre',
@@ -19,5 +19,28 @@ class Patients extends Model
         'direccion',
         'telefono',
         'historial_medico',
+
+        
     ];
+
+  
+
+    public $timestamps =false;
+
+    protected $casts = [
+        'historial_medico' => 'array',
+    ];
+
+    // Relación con el usuario
+    public function usuario()
+    {
+        return $this->belongsTo(UsuarioDelSistema::class, 'usuario_id');
+    }
+
+
+public function citas()
+{
+    return $this->hasMany(CitaMedica::class);
+}
+
 }

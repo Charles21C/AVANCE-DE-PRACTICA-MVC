@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UsuarioDelSistema;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UsuarioDelSistemaController extends Controller
 {
@@ -12,7 +13,8 @@ class UsuarioDelSistemaController extends Controller
      */
     public function index()
     {
-        //
+        $usuarios = UsuarioDelSistema::all();
+        return view('usuarios.index', compact('usuarios'));
     }
 
     /**
@@ -20,7 +22,7 @@ class UsuarioDelSistemaController extends Controller
      */
     public function create()
     {
-        //
+        return view('usuarios.create');
     }
 
     /**
@@ -28,7 +30,24 @@ class UsuarioDelSistemaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validación de los datos
+        $request->validate([
+            'nombreUsuario' => 'required|string|max:255|unique:usuarios,nombreUsuario',
+            'contraseña' => 'required|string|min:6',
+            'tipoUsuario' => 'required|string|in:admin,medico,paciente,secretaria',
+            'email' => 'required|string|max:255',
+        ]);
+
+        // Crear el usuario
+        UsuarioDelSistema::create([
+            'nombreUsuario' => $request->nombreUsuario,
+            'contraseña' => Hash::make($request->contraseña), // Encriptar la contraseña
+            'tipoUsuario' => $request->tipoUsuario,
+            'email' => $request->email,
+        ]);
+
+        // Redirigir con mensaje de éxito
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     /**
@@ -36,7 +55,7 @@ class UsuarioDelSistemaController extends Controller
      */
     public function show(UsuarioDelSistema $usuarioDelSistema)
     {
-        //
+        return view('usuarios.show', compact('usuarioDelSistema'));
     }
 
     /**
@@ -44,7 +63,7 @@ class UsuarioDelSistemaController extends Controller
      */
     public function edit(UsuarioDelSistema $usuarioDelSistema)
     {
-        //
+        return view('usuarios.edit', compact('usuarioDelSistema'));
     }
 
     /**
@@ -52,7 +71,22 @@ class UsuarioDelSistemaController extends Controller
      */
     public function update(Request $request, UsuarioDelSistema $usuarioDelSistema)
     {
-        //
+        $request->validate([
+            'nombreUsuario' => 'required|string|max:255|unique:usuarios,nombreUsuario,' . $usuarioDelSistema->id,
+            'contraseña' => 'nullable|string|min:6',
+            'tipoUsuario' => 'required|string|in:admin,medico,paciente,secretaria',
+            'email' => 'required|string|max:255',
+        ]);
+
+        // Actualizar los datos del usuario
+        $usuarioDelSistema->update([
+            'nombreUsuario' => $request->nombreUsuario,
+            'contraseña' => $request->contraseña ? Hash::make($request->contraseña) : $usuarioDelSistema->contraseña,
+            'tipoUsuario' => $request->tipoUsuario,
+            'email' => $request->email,
+        ]);
+
+        return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
     /**
@@ -60,6 +94,7 @@ class UsuarioDelSistemaController extends Controller
      */
     public function destroy(UsuarioDelSistema $usuarioDelSistema)
     {
-        //
+        $usuarioDelSistema->delete();
+        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 }

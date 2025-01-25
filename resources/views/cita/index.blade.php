@@ -116,31 +116,34 @@
                     <th>ID</th>
                     <th>Paciente</th>
                     <th>Médico</th>
+                    <th>Especialidad</th>
                     <th>Fecha y Hora</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($citas as $item)
-                    <tr>
-                        <td>{{ $item->id }}</td>
-                        <td>{{ $item->paciente->nombre }}</td> 
-                        <td>{{ $item->medico?->nombre ?? 'Sin médico asignado' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($item->fecha . ' ' . $item->hora)->format('d/m/Y H:i') }}</td> <!-- Fecha y Hora -->
-                        <td>{{ $item->estado }}</td>
-                        <td>
-                            <a href="{{ route('cita.show', $item->id) }}" class="btn btn-info btn-sm">Ver</a>
-                            <a href="{{ route('cita.edit', $item->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                            <form action="{{ route('cita.destroy', $item->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta cita?')">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
+    @foreach($citas as $item)
+        <tr>
+            <td>{{ $item->id }}</td>
+            <td>{{ $item->patient->nombre ?? 'Sin paciente asignado' }}</td> <!-- Nombre del paciente -->
+            <td>{{ $item->doctor->nombre ?? 'Sin médico asignado' }}</td> <!-- Nombre del médico -->
+            <td>{{ $item->especialidad }}</td> <!-- Especialidad de la cita -->
+            <td>{{ \Carbon\Carbon::parse($item->fecha . ' ' . $item->hora)->format('d/m/Y H:i') }}</td> <!-- Fecha y hora -->
+            <td>{{ $item->estado }}</td> <!-- Estado de la cita -->
+            <td>
+                <a href="{{ route('cita.show', $item->id) }}" class="btn btn-info btn-sm">Ver</a>
+                <a href="{{ route('cita.edit', $item->id) }}" class="btn btn-warning btn-sm">Editar</a>
+                <form action="{{ route('cita.destroy', $item->id) }}" method="POST" style="display:inline-block;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta cita?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
         </table>
     </div>
 </div>
