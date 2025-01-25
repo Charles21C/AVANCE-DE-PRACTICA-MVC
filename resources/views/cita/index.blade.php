@@ -125,7 +125,7 @@
                 @foreach($citas as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ $item->paciente->nombre }}</td> <!-- Paciente -->
+                        <td>{{ $item->paciente->nombre }}</td> 
                         <td>{{ $item->medico?->nombre ?? 'Sin médico asignado' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->fecha . ' ' . $item->hora)->format('d/m/Y H:i') }}</td> <!-- Fecha y Hora -->
                         <td>{{ $item->estado }}</td>

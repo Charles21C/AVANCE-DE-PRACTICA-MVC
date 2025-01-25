@@ -16,7 +16,7 @@
 
     /*  formularios */
     .container {
-      background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro y transparente */
+      background-color: rgba(0, 0, 0, 0.5); 
       padding: 30px;
       border-radius: 15px;
       max-width: 600px;
