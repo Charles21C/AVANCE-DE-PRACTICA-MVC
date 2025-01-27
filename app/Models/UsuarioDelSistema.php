@@ -34,7 +34,7 @@ class UsuarioDelSistema extends Authenticatable
     public $timestamps = false;
 
       // Relación con el usuario
-      public function patients()
+      public function patient()
       {
           return $this->hasOne(Patients::class, 'usuario_id');
       }

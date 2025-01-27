@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.masterCh')
 
-@section('title', 'Editar Cita Médica')
+
 
 @section('content')
 <div class="container mt-5">

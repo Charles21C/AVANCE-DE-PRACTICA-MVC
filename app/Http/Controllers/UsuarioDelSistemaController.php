@@ -46,6 +46,8 @@ class UsuarioDelSistemaController extends Controller
             'email' => $request->email,
         ]);
 
+        
+
         // Redirigir con mensaje de éxito
         return redirect()->route('usuarios.index')->with('success', 'Usuario creado exitosamente.');
     }

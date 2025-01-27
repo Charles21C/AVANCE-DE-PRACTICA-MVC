@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\UsuarioDelSistema;
 
 
+
+
 class LoginController extends Controller
 {
     public function showLoginForm()
@@ -30,10 +32,10 @@ class LoginController extends Controller
             } elseif ($user->tipoUsuario == 'secretaria') {
                  return redirect()->route('admin.dashboard');
             } elseif ($user->tipoUsuario == 'medico') {
-                 return redirect()->route('doctor.index'); 
+                 return redirect()->route('doctor.dashboard'); 
             } elseif ($user->tipoUsuario == 'paciente') {
-                 return redirect()->route('patients.dashboard'); 
-        }
+                return redirect()->route('patients.dashboard'); 
+            }
         }
     
         return back()->withErrors([

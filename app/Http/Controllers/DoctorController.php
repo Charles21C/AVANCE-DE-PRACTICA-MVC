@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Doctor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class DoctorController extends Controller
 {
@@ -15,6 +17,18 @@ class DoctorController extends Controller
         $doctor = Doctor::all(); // Obtener todos los doctores
         return view('doctor.index', compact('doctor'));
         
+    }
+
+
+    public function dashboard()
+    {
+        $user = Auth::guard('usuarios')->user(); // Usuario autenticado
+        $doctor = $user ? $user->doctor : null; // Relación entre usuario y paciente
+    
+        // Verificamos la relación
+        dd($doctor); 
+    
+        return view('doctor.dashboard', compact('doctor'));
     }
 
     /**

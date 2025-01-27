@@ -20,17 +20,6 @@ class CitaMedica extends Model
         'patient_id',  
     ];
 
-    // Relaciones
-    //public function doctor()
-   // {
-      //  return $this->belongsTo(Doctor::class);
-   // }
-
-    //public function patient() 
-    //{
-      //  return $this->belongsTo(Patients::class);  
-   // }
-
     public function patient()
 {
     return $this->belongsTo(Patients::class, 'patient_id');

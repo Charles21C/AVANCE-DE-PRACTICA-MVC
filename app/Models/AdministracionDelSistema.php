@@ -7,10 +7,10 @@ use App\Models\UsuarioDelSistema;
 
 class AdministracionDelSistema extends UsuarioDelSistema
 {
-    // Usar el trait HasRoles para gestión de roles y permisos
+
     use HasRoles;
 
-    protected $table = 'usuarios'; // Tabla compartida con UsuarioDelSistema
+    protected $table = 'usuarios'; 
 
     // Filtra solo a los administradores
     public static function scopeAdministradores($query)
@@ -18,9 +18,9 @@ class AdministracionDelSistema extends UsuarioDelSistema
         return $query->where('tipoUsuario', 'administrador');
     }
 
-    // Relación con roles usando Spatie (si lo usas)
+    // Relación con roles usando Spatie 
     public function permisos()
     {
-        return $this->getRoleNames(); // Suponiendo que usas Spatie Laravel Permission
+        return $this->getRoleNames(); 
     }
 }

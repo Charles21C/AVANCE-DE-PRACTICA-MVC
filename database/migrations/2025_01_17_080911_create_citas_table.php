@@ -36,7 +36,7 @@ return new class extends Migration
 };
 
 
-
+//ESTE ES EL CAMBIO BORRA
 Schema::table('citas', function (Blueprint $table) {
     $table->unsignedBigInteger('doctor_id');
     $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');

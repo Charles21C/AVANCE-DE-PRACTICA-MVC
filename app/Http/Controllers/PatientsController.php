@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Patients;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class PatientsController extends Controller
@@ -19,10 +21,23 @@ class PatientsController extends Controller
         return view('patients.index', compact('patients'));
     }
 
+
     public function dashboard()
     {
-        return view('patients.dashboard'); // Vista principal
+        $user = Auth::guard('usuarios')->user(); // Usuario autenticado
+        $patient = $user ? $user->patient : null; // Relación entre usuario y paciente
+    
+        // Verificamos la relación
+        dd($patient); // Esto mostrará los datos del paciente o null si no se encuentra
+    
+        return view('patients.dashboard', compact('patient'));
     }
+    
+    
+
+    
+    
+    
 
     /**
      * Mostrar el formulario para crear un nuevo paciente.
@@ -47,7 +62,15 @@ class PatientsController extends Controller
             'historial_medico' => 'nullable|array',
         ]);
 
-        Patients::create($request->all());
+        Patients::create([
+            'nombre' => $request->nombre,
+            'edad' => $request->edad,
+            'genero' => $request->genero,
+            'direccion' => $request->direccion,
+            'telefono' => $request->telefono,
+            'historial_medico' => json_encode($request->historial_medico),
+            'usuario_id' => Auth::id(), // Asociar al usuario autenticado
+        ]);
 
         return redirect()->route('patients.index')->with('success', 'Paciente creado exitosamente.');
     }
@@ -103,4 +126,9 @@ class PatientsController extends Controller
         $patient->delete();
         return redirect()->route('patients.index')->with('success', 'Paciente eliminado exitosamente.');
     }
+
+
+ 
+
+    
 }

@@ -16,36 +16,16 @@ class CitaMedicaController extends Controller
     }
 
     
-       //desde aqui es el cambio
-        public function create()
-        {
-             //$doctors = Doctor::all();
-        //$patients = Patients::all(); 
-        //return view('cita.create', compact('doctors', 'patients'));
+    public function create()
+    {
+        // Obtener todos los doctores y pacientes
+        $doctors = Doctor::all();
+        $patients = Patients::all();
+        
+        // Pasar los datos a la vista
+        return view('cita.create', compact('doctors', 'patients'));
+    }
 
-            $especialidades = Doctor::select('especialidad')->distinct()->pluck('especialidad');
-            return view('cita.create', compact('especialidades'));
-        }
-    
-        public function disponibilidad(Request $request)
-        {
-            $especialidad = $request->input('especialidad');
-            $doctors = Doctor::where('especialidad', $especialidad)->get(['id', 'nombre', 'horario_disponible']);
-    
-            $disponibilidad = [];
-            foreach ($doctors as $doctor) {
-                $horarios = json_decode($doctor->horario_disponible, true);
-                foreach ($horarios as $horario) {
-                    $disponibilidad[] = [
-                        'doctor_id' => $doctor->id,
-                        'doctor' => $doctor->nombre,
-                        'horario' => $horario,
-                    ];
-                }
-            }
-            return response()->json($disponibilidad);
-        }
-    //hasta aqui es el cambio
 
     public function store(Request $request)
     {
@@ -96,12 +76,6 @@ class CitaMedicaController extends Controller
         $cita->delete();
         return redirect()->route('cita.index')->with('success', 'Cita médica eliminada exitosamente.');
     }
-
-
-
-
-
-
 
 
 }

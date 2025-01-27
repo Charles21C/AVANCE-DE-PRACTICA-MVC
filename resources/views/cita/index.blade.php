@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.masterCh')
 
-@section('title', 'Listado de Citas Médicas')
+@section('content')
 
 @push('styles')
     <style>

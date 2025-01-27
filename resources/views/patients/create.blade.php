@@ -9,6 +9,10 @@
                 <h2 class="mb-0">Crear Paciente</h2>
             </div>
             <div class="card-body" style="background-color: #f8f9fa;">
+
+
+
+            
                 <form action="{{ route('patients.store') }}" method="POST">
                     @csrf
 
@@ -58,7 +62,7 @@
 
                     <div class="mb-4">
                         <label for="historial_medico" class="form-label"><strong>Historial Médico</strong></label>
-                        <input type="text" name="historial_medico[]" class="form-control form-control-lg" placeholder="Alergias, operaciones, enfermedad catastrótiica, etc." required>
+                        <input type="text" name="historial_medico[]" class="form-control form-control-lg" placeholder="Alergias, operaciones, enfermedad catastrófica, etc." required>
                         @error('historial_medico')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
